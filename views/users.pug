@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1 Users
+  ul
+    each user in user_list.length ? user_list : ['There are no users']
+      li= user._id + ' ' + user.name
+
+  a(href="/users/add") New user
