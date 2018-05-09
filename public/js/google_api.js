@@ -1,6 +1,6 @@
 var map;
 //var markers = [];
-const url = 'http://localhost:3000/checkins';
+const url = '/checkins';
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 49.2212619, lng: 28.4229144 },
@@ -48,7 +48,7 @@ function addMarker(checkin) {
     clickable:true,
     title: checkin.place
   });
-/*
+
   var infowindow = new google.maps.InfoWindow({
      content: marker.title,
      maxWidth: 400
@@ -57,5 +57,5 @@ function addMarker(checkin) {
   marker.addListener('click', function() {
      infowindow.open(map, marker);
   });
-*/
+
 }
