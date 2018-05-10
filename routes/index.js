@@ -24,16 +24,16 @@ router.post('/checkins', function(req, res, next) {
     cord: req.body.cord,
     place: req.body.place
   };
-  console.log(checkin);
-  res.sendStatus( 200 );
+  //console.log(checkin);
+  //res.sendStatus( 200 );
 
-/*
+
   const newCheckin = new checkinModel(checkin);
   newCheckin.save(function(error, checkin){
-      console.log(error, checkin);
-      //res.redirect('/');
+      //console.log(error, checkin);
+      res.sendStatus( 200 );
   });
-*/
+
 });
 
 
