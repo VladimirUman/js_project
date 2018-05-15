@@ -1,6 +1,39 @@
 extends layout
 
 block content
+  // Modal
+  #myModal.modal.fade(role='dialog', tabindex='-1')
+      .modal-dialog
+        // Modal content
+        .modal-content
+          .modal-header(style='padding:25px 30px;')
+            h4
+              |  Add your checkin
+            button.close(type='button', data-dismiss='modal') &times;
+            
+          .modal-body(style='padding:20px 30px;')
+            .form-group
+              label(for='username')
+                span.glyphicon.glyphicon-user
+                |  Username
+              |               
+              input#username.form-control(type='email')
+            |             
+            .form-group
+              label(for='place')
+                span.glyphicon.glyphicon-eye-open
+                |  Place
+              |               
+              textarea#place.form-control(type='text', rows='3')
+            |               
+            button#sub.btn.btn-success.btn-block(type='submit', data-dismiss='modal')
+              span.glyphicon.glyphicon-off
+              |  Add checkin
+          |         
+          .modal-footer
+            button.btn.btn-danger.btn-default.pull-left(type='submit', data-dismiss='modal')
+              span.glyphicon.glyphicon-remove
+              |  Cancel
+            
   p= checkins
   div#map
-  script.

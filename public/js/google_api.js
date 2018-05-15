@@ -8,13 +8,19 @@ function initMap() {
   });
 
   google.maps.event.addListener(map, 'click', function(event) {
-    var title = prompt('Введите название:', '');
-    if (title) {
+    $("#myModal").modal();
+    //var place = '';
+    //var name = '';
+
+    document.getElementById('sub').onclick = function () {
       let checkin = {
         cord: event.latLng,
-        place: title
+        place: document.getElementById('place').value,
+        username: document.getElementById('username').value
       }
+
       addMarker(checkin);
+
       var request = new Request(url, {
           method: 'POST',
           body: JSON.stringify(checkin),
@@ -26,7 +32,9 @@ function initMap() {
       .catch(function() {
           console.log('Error');
       });
-    }
+    };
+    document.getElementById('place').value = "";
+    document.getElementById('username').value = "";
   });
 
 }

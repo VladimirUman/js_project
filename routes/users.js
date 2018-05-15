@@ -21,15 +21,11 @@ router.get('/add', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next) {
-  var userName = req.body.firstname;
-  var userEmail = req.body.email;
-  var userPass = req.body.password;
-  var userTwitter = req.body.twitname;
   let user = {
-    name: userName,
-    email: userEmail,
-    password: userPass,
-    twitter_account: userTwitter
+    name: req.body.firstname,
+    email: req.body.email,
+    password: req.body.password,
+    twitter_account: req.body.twitname
   }
 
   const newUser = new userModel(user);

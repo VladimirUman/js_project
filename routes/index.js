@@ -20,20 +20,20 @@ router.get('/checkins', function(req, res, next) {
 
 router.post('/checkins', function(req, res, next) {
   let checkin = {
-    name: 'Test User',
+    name: req.body.username,
     cord: req.body.cord,
     place: req.body.place
   };
-  //console.log(checkin);
-  //res.sendStatus( 200 );
+  console.log(checkin);
+  res.sendStatus( 200 );
 
-
+/*
   const newCheckin = new checkinModel(checkin);
   newCheckin.save(function(error, checkin){
       //console.log(error, checkin);
       res.sendStatus( 200 );
   });
-
+*/
 });
 
 
