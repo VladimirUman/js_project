@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 const config = require('../config.json');
 const mongoose = require('mongoose');
-const User = require('./../models/user.js');
-mongoose.connect("mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin");
+const User = require('./../models/userModel.js');
+mongoose.connect(config.dbUrl);
 const db = mongoose.connection;
 const userModel = db.model('test_users', User);
 //console.log(mongoose.connection.readyState);
@@ -27,7 +27,7 @@ router.post('/add', function(req, res, next) {
     password: req.body.password,
     twitter_account: req.body.twitname
   }
-
+  console.log(req.body);
   const newUser = new userModel(user);
   newUser.save(function(error, user){
       console.log(error, user);
