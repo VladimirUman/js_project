@@ -1,16 +1,26 @@
 extends layout
 
 block content
+  h3 Add new user
   form(action="/users/add" method="post")
-    p User name:
-    input(name="firstname" type="text")
-    p User email:
-    input(name="email" type="text")
-    p User password:
-    input(name="password" type="text")
-    p Tweeter account:
-    input(name="twitname" type="text")
-    p
-    button(type="submit") save
+    .form-group
+      label.col-sm-2.col-form-label(for='name') User name:
+      .col-sm-4
+        input#name.form-control(name='name', type='text')
+    .form-group
+      label.col-sm-2.col-form-label(for='email') User email:
+      .col-sm-4
+        input#email.form-control(name='email', type='text')
+    .form-group
+      label.col-sm-2.col-form-label(for='password') User password:
+      .col-sm-4
+        input#password.form-control(name='password', type='text')
+    .form-group
+      label.col-sm-2.col-form-label(for='account') Tweeter account:
+      .col-sm-4
+        input#account.form-control(name='twitter_account', type='text')
+    .form-group
+      .col-sm-4
+        button.btn.btn-success(type="submit") Save user
   p
   a(href="/users") Back to users

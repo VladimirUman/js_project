@@ -3,11 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var User = require('./models/userModel.js');
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var ApiUsersRouter = require('./api/routes/usersRoutes');
-var ApiCheckinsRouter = require('./api/routes/checkinsRoutes');
+var ApiUsersRouter = require('./api/routes/users');
+var ApiCheckinsRouter = require('./api/routes/checkins');
+var ApiAuthorizationRouter = require('./api/routes/auth');
 
 var app = express();
 
@@ -25,6 +30,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/users', ApiUsersRouter);
 app.use('/api/checkins', ApiCheckinsRouter);
+app.use('/api/auth', ApiAuthorizationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

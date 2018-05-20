@@ -1,18 +1,15 @@
 var express = require('express');
+var express = require('express');
 var router = express.Router();
-const config = require('../config.json');
-const mongoose = require('mongoose');
-const User = require('./../models/userModel.js');
-mongoose.connect(config.dbUrl);
-const db = mongoose.connection;
-const userModel = db.model('test_users', User);
-//console.log(mongoose.connection.readyState);
+var mongoose = require('mongoose');
+User = mongoose.model('User');
+var bcrypt = require('bcrypt');
 
 router.get('/', function(req, res, next) {
 
-  userModel.find({}, function (err, users) {
+  User.find({}, function (err, users) {
     //console.log(users);
-    res.render('users', { user_list: users });
+    res.render('users', { userList: users });
   });
 });
 
@@ -21,19 +18,11 @@ router.get('/add', function(req, res, next) {
 });
 
 router.post('/add', function(req, res, next) {
-  let user = {
-    name: req.body.firstname,
-    email: req.body.email,
-    password: req.body.password,
-    twitter_account: req.body.twitname
-  }
-  console.log(req.body);
-  const newUser = new userModel(user);
+  const newUser = new User(req.body);
+  newUser.password = bcrypt.hashSync(req.body.password, 10);
   newUser.save(function(error, user){
-      console.log(error, user);
-      res.redirect('/users');
+    res.redirect('/users');
   });
-
 });
 
 module.exports = router;

@@ -2,8 +2,18 @@ extends layout
 
 block content
   h1 Users
-  ul
-    each user in user_list.length ? user_list : ['There are no users']
-      li= user._id + ' ' + user.name
+  table.table(border="1" width="80%")
+    th(width="20%") Id
+    th(width="15%") Name
+    th(width="15%") email
+    th(width="15%") Twitter Account
+    th(width="15%") Admin
+    each user in userList.length ? userList : ['There are no users']
+      tr
+        td= user._id
+        td= user.name
+        td= user.email
+        td= user.twitter_account
+        td= user.admin
 
   a(href="/users/add") New user
