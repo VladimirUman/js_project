@@ -1,20 +1,19 @@
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var User = require('./models/userModel.js');
+var Checkin = require('./models/checkinModel.js');
+var bodyParser = require('body-parser');
+var jsonwebtoken = require("jsonwebtoken");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var ApiUsersRouter = require('./api/routes/users');
-var ApiCheckinsRouter = require('./api/routes/checkins');
-var ApiAuthorizationRouter = require('./api/routes/auth');
-
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,11 +25,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/api/users', ApiUsersRouter);
-app.use('/api/checkins', ApiCheckinsRouter);
-app.use('/api/auth', ApiAuthorizationRouter);
+app.use(function(req, res, next) {
+  //console.log('2', req.headers);
+  //console.log('3', req.headers.authorization);
+  //console.log('4', req.headers.authorization.split(' ')[0]);
+  if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
+    jsonwebtoken.verify(req.headers.authorization.split(' ')[1], 'mySecretWordMySecretWord', function(err, decode) {
+      if (err) req.user = undefined;
+      req.user = decode;
+      next();
+    });
+  } else {
+    req.user = undefined;
+    next();
+  }
+});
+
+var routes = require('./routes/routeList.js');
+routes(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

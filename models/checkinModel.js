@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
   // ObjectId = Schema.ObjectId;
 
-const Checkins = new Schema({
+const CheckinSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -15,4 +15,4 @@ const Checkins = new Schema({
     }
 });
 
-module.exports = Checkins;
+module.exports = mongoose.model('Checkin', CheckinSchema, 'checkins');

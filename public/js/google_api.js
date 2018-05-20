@@ -1,6 +1,6 @@
 var map;
 //var markers = [];
-const url = '/checkins';
+const url = '/api/checkins';
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 49.2212619, lng: 28.4229144 },
@@ -9,14 +9,12 @@ function initMap() {
 
   google.maps.event.addListener(map, 'click', function(event) {
     $("#myModal").modal();
-    //var place = '';
-    //var name = '';
 
     document.getElementById('sub').onclick = function () {
       let checkin = {
         cord: event.latLng,
         place: document.getElementById('place').value,
-        username: document.getElementById('username').value
+        name: document.getElementById('username').value
       }
 
       addMarker(checkin);
