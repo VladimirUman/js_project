@@ -14,7 +14,7 @@ module.exports = function(app) {
 		.delete(users.loginRequired, checkins.deleteCheckin);
 
 	app.route('/api/auth')
-		.post(users.auth);
+    .post(users.auth);
 
 	app.route('/api/users')
     .get(users.loginRequired, users.allUsers)
@@ -22,8 +22,8 @@ module.exports = function(app) {
 
   app.route('/api/users/:userId')
     .get(users.readlUser)
-		.put(users.updateUser)
-    .delete(users.deleteUser);
+		.put(users.loginRequired, users.updateUser)
+    .delete(users.loginRequired, users.deleteUser);
 
   app.route('/')
     .get(checkinsWeb.indexPage);

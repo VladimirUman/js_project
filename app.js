@@ -13,6 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var mongoose = require('mongoose');
+if (process.env.TEST_ENV) {
+  mongoose.connect('mongodb://localhost:27017/checkin');
+}
 mongoose.connect('mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin');
 
 // view engine setup
@@ -26,11 +29,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
-  //console.log('2', req.headers);
-  //console.log('3', req.headers.authorization);
-  //console.log('4', req.headers.authorization.split(' ')[0]);
-  if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-    jsonwebtoken.verify(req.headers.authorization.split(' ')[1], 'mySecretWordMySecretWord', function(err, decode) {
+  var token = req.headers.authorization;
+  if (token) {
+    jsonwebtoken.verify(token, 'mySecretWordMySecretWord', function(err, decode) {
       if (err) req.user = undefined;
       req.user = decode;
       next();

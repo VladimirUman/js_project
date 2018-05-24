@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  // Modal
-  #myModal.modal.fade(role='dialog', tabindex='-1')
+  // Modal add checkin
+  #checkinModal.modal.fade(role='dialog', tabindex='-1')
       .modal-dialog
         // Modal content
         .modal-content
@@ -13,18 +13,18 @@ block content
 
           .modal-body(style='padding:20px 30px;')
             .form-group
-              label(for='username')
-                span.glyphicon.glyphicon-user
-                |  Username
-              |
-              input#username.form-control(type='text')
-            |
-            .form-group
               label(for='place')
-                span.glyphicon.glyphicon-eye-open
+                span.glyphicon.glyphicon-user
                 |  Place
               |
-              textarea#place.form-control(type='text', rows='3')
+              input#place.form-control(type='text')
+            |
+            .form-group
+              label(for='description')
+                span.glyphicon.glyphicon-eye-open
+                |  Description
+              |
+              textarea#description.form-control(type='text', rows='3')
             |
             button#sub.btn.btn-success.btn-block(type='submit', data-dismiss='modal')
               span.glyphicon.glyphicon-off
@@ -34,6 +34,40 @@ block content
             button.btn.btn-danger.btn-default.pull-left(type='submit', data-dismiss='modal')
               span.glyphicon.glyphicon-remove
               |  Cancel
+              
+  // Modal login  
+  #loginModal.modal.fade(role='dialog', tabindex='-1')
+      .modal-dialog
+        // Modal content
+        .modal-content
+          .modal-header(style='padding:25px 30px;')
+            h4
+              |  Login
+            button.close(type='button', data-dismiss='modal') &times;
+            
+          .modal-message
+            #message(style='text-align:center; padding:10px; color:red')
+              
 
-  p= title
+          .modal-body(style='padding:10px 30px 20px 30px;')
+            .form-group
+              label(for='name')
+                span.glyphicon.glyphicon-user
+                |  Name
+              |
+              input#name.form-control(type='text')
+            |
+            .form-group
+              label(for='password')
+                span.glyphicon.glyphicon-eye-open
+                |  Password
+              |
+              input#password.form-control(type='text')
+            |
+            button#loginSubmit.btn.btn-success.btn-block(type='submit')
+              span.glyphicon.glyphicon-off
+              |  Login
+          |
+  p= message
   div#map
+  script(src="/js/google_api.js")

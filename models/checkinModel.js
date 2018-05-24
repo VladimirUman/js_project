@@ -9,6 +9,7 @@ const CheckinSchema = new Schema({
         required: true
     },
     place: String,
+    description: String,
     cord: {
     	lat:Number,
     	lng:Number

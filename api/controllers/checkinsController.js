@@ -11,6 +11,7 @@ exports.allCheckins = function(req, res) {
 
 exports.createCheckin = function(req, res) {
   var newCheckin = new Checkin(req.body);
+  newCheckin.name = req.user.name;
   newCheckin.save(function(err, checkin) {
     if (err)
       res.send(err);

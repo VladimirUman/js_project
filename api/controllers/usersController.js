@@ -12,19 +12,21 @@ exports.auth = function(req, res) {
     if (err) {
       res.status(500).send(err.message);
     } else if (!user) {
-      res.status(422).send({message: "Not found user"});
+      res.status(400).send({message: "Not found user"});
     } else {
-      if (user.comparePassword(req.body.password)) {
-        var token = jwt.sign({ name: user.name, admin: user.admin }, 'mySecretWordMySecretWord');
-        res.status(200).send({ name: user.name, token: token })
+      if (user.comparePassword(req.body.password) && !req.user) {
+        var token = jwt.sign({ name: user.name, admin: user.admin }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
+        res.status(200).send({message: "OK", name: user.name, token: token });
       } else {
-        res.status(422).send({message: "Wrong password"});
+        res.status(400).send({message: "Wrong password"});
       }
     }
   });
 };
 
+
 exports.loginRequired = function(req, res, next) {
+  console.log(req.user);
   if (req.user) {
     next();
   } else {
