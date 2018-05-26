@@ -36,23 +36,26 @@ exports.loginRequired = function(req, res, next) {
 
 
 exports.allUsers = function(req, res) {
+  //console.log(req);
   User.find({}, function (err, users) {
     if (err)
       res.send(err);
-    res.json(users);
+    res.status(200).json(users);
+    //console.log(users);
   });
 };
 
 exports.createUser = function(req, res) {
+  //console.log(req.body);
   var newUser = new User(req.body);
   newUser.password = bcrypt.hashSync(req.body.password, 10);
   newUser.admin = false;
   newUser.save(function(err, user) {
     if (err) {
-      return res.status(400).send({ message: err });
+      return res.status(400).send(err);
     } else {
       user.password = undefined;
-      return res.json(user);
+      return res.status(200).json(user);
     }
   });
 };
@@ -62,7 +65,7 @@ exports.readlUser = function(req, res) {
   User.findById(req.params.userId, function(err, user) {
     if (err)
       res.send(err);
-    res.json(user);
+    res.status(200).json(user);
   });
 };
 
@@ -71,7 +74,7 @@ exports.updateUser = function(req, res) {
   User.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, user) {
     if (err)
       res.send(err);
-    res.json(user);
+    res.status(200).json(user);
   });
 };
 
@@ -82,6 +85,6 @@ exports.deleteUser = function(req, res) {
   }, function(err, user) {
     if (err)
       res.send(err);
-    res.json({ message: 'User successfully deleted' });
+    res.status(200).json({ message: 'User successfully deleted' });
   });
 };

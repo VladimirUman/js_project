@@ -9,14 +9,19 @@ var Checkin = require('./models/checkinModel.js');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require("jsonwebtoken");
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: 'application/json'}));
 
 var mongoose = require('mongoose');
-if (process.env.TEST_ENV) {
+if (process.env.NODE_ENV == 'test') {
   mongoose.connect('mongodb://localhost:27017/checkin');
+  console.log('test BD connected', mongoose.connection.readyState);
+} else {
+  mongoose.connect('mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin');
+  console.log('development BD connected', mongoose.connection.readyState);
 }
-mongoose.connect('mongodb+srv://User3:test@brainbasketcheckin-h7hkk.mongodb.net/checkin');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

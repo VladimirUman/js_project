@@ -1,5 +1,15 @@
-var token = localStorage.getItem('token');
+//Show and hide buttons
+displayButton();
 
+function displayButton () {
+  if (localStorage.getItem('token') && localStorage.getItem('user')) {
+    document.getElementById('logoutButton').style.display = "block";
+    document.getElementById('loginButton').style.display = "none";
+    document.getElementById('signButton').style.display = "none";
+  }
+}
+
+//Log in
 function login () {
 
   $("#loginModal").modal();
@@ -27,9 +37,11 @@ function login () {
       if (data.message == 'OK') {
         localStorage.setItem('token', JSON.stringify(data.token))
         localStorage.setItem('user', JSON.stringify(data.name))
+        console.log('1');
+        displayButton();
+      } else {
+        document.getElementById('message').innerHTML = data.message;
       }
-      document.getElementById('message').innerHTML = data.message;
-      console.log(data.message);
     })
     .catch(function() {
       console.log('Error');
@@ -40,9 +52,81 @@ function login () {
 
 };
 
-
 document.getElementById('loginButton').onclick = login;
 
+//Log out
+function logout () {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+};
+
+document.getElementById('logoutButton').onclick = logout;
+
+
+//Sign up
+function signup () {
+
+  $("#signModal").modal();
+
+  document.getElementById('signSubmit').onclick = function () {
+
+    const user = {
+      name: document.getElementById('signName').value,
+      email: document.getElementById('signEmail').value,
+      password: document.getElementById('signPassword').value,
+      twitter_account: document.getElementById('signAccount').value
+    };
+
+    var request = new Request('/api/users', {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    fetch(request)
+    .then(function(response) {
+      if (response.status == 200) {
+        $('#signModal').modal('hide')
+        fetch('/api/auth', {
+          method: 'POST',
+          body: JSON.stringify({ name: user.name, password: user.password }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(function(response) {
+          return response.json()
+        })
+        .then(function(data) {
+          if (data.message == 'OK') {
+            localStorage.setItem('token', JSON.stringify(data.token))
+            localStorage.setItem('user', JSON.stringify(data.name))
+          }
+          displayButton();
+        })
+        .catch(function() {
+          console.log('Error login');
+        });
+      } else {
+        return response.json()
+      }
+    })
+    .then(function(data) {
+      document.getElementById('signMessage').innerHTML = data.message;
+      console.log(data.message);
+    })
+    .catch(function() {
+      console.log('Error signup');
+    });
+  };
+
+  document.getElementById('signName').value = "";
+  document.getElementById('signEmail').value = "";
+  document.getElementById('signPassword').value = "";
+  document.getElementById('signAccount').value = "";
+
+};
+
+document.getElementById('signButton').onclick = signup;
+
+//Init map and adding checkins
 var map;
 const url = '/api/checkins';
 function initMap() {
@@ -51,8 +135,9 @@ function initMap() {
     zoom: 14
   });
 
+  //Add checkin
   google.maps.event.addListener(map, 'click', function(event) {
-    if (token) {
+    if (localStorage.getItem('token') && localStorage.getItem('user')) {
       $("#checkinModal").modal();
 
       document.getElementById('sub').onclick = function () {
@@ -85,7 +170,7 @@ function initMap() {
   });
 
 }
-
+//Get chekins
 fetch(url)
 .then((resp) => resp.json()) // Transform the data into json
 .then(function(checkins) {
@@ -95,6 +180,7 @@ fetch(url)
     console.log('Error');
 });
 
+//Add marker on map
 function addMarker(checkin) {
   var marker = new google.maps.Marker({
     position: checkin.cord,

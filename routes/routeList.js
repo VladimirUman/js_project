@@ -17,7 +17,7 @@ module.exports = function(app) {
     .post(users.auth);
 
 	app.route('/api/users')
-    .get(users.loginRequired, users.allUsers)
+    .get(users.allUsers)
 		.post(users.createUser);
 
   app.route('/api/users/:userId')

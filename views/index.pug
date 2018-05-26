@@ -7,21 +7,21 @@ block content
         // Modal content
         .modal-content
           .modal-header(style='padding:25px 30px;')
+            button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Add your checkin
-            button.close(type='button', data-dismiss='modal') &times;
-
+            
           .modal-body(style='padding:20px 30px;')
             .form-group
               label(for='place')
-                span.glyphicon.glyphicon-user
+                span.glyphicon.glyphicon-map-marker
                 |  Place
               |
               input#place.form-control(type='text')
             |
             .form-group
               label(for='description')
-                span.glyphicon.glyphicon-eye-open
+                span.glyphicon.glyphicon-pencil
                 |  Description
               |
               textarea#description.form-control(type='text', rows='3')
@@ -30,10 +30,7 @@ block content
               span.glyphicon.glyphicon-off
               |  Add checkin
           |
-          .modal-footer
-            button.btn.btn-danger.btn-default.pull-left(type='submit', data-dismiss='modal')
-              span.glyphicon.glyphicon-remove
-              |  Cancel
+          
               
   // Modal login  
   #loginModal.modal.fade(role='dialog', tabindex='-1')
@@ -41,10 +38,10 @@ block content
         // Modal content
         .modal-content
           .modal-header(style='padding:25px 30px;')
+            button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Login
-            button.close(type='button', data-dismiss='modal') &times;
-            
+                        
           .modal-message
             #message(style='text-align:center; padding:10px; color:red')
               
@@ -68,6 +65,53 @@ block content
               span.glyphicon.glyphicon-off
               |  Login
           |
-  p= message
-  div#map
+          
+  // Modal sign up
+  #signModal.modal.fade(role='dialog', tabindex='-1')
+      .modal-dialog
+        // Modal content
+        .modal-content
+          .modal-header(style='padding:25px 30px;')
+            button.close(type='button', data-dismiss='modal') &times;
+            h4
+              |  Sign up
+              
+          .modal-message
+            #signMessage(style='text-align:center; padding:10px; color:red')
+            
+          .modal-body(style='padding:20px 30px;')
+            .form-group
+              label(for='signName')
+                span.glyphicon.glyphicon-map-marker
+                |  Name
+              |
+              input#signName.form-control(type='text')
+            |
+            .form-group
+              label(for='signEmail')
+                span.glyphicon.glyphicon-map-marker
+                |  Email
+              |
+              input#signEmail.form-control(type='text')
+            |
+            .form-group
+              label(for='signPassword')
+                span.glyphicon.glyphicon-map-marker
+                |  Password
+              |
+              input#signPassword.form-control(type='text')
+            |
+            .form-group
+              label(for='signAccount')
+                span.glyphicon.glyphicon-map-marker
+                |  Twitter account
+              |
+              input#signAccount.form-control(type='text')
+            |
+            button#signSubmit.btn.btn-success.btn-block(type='submit')
+              span.glyphicon.glyphicon-off
+              |  Sign up
+          |
+                        
+  #map
   script(src="/js/google_api.js")
