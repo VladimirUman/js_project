@@ -26,7 +26,7 @@ block content
               |
               textarea#description.form-control(type='text', rows='3')
             |
-            button#sub.btn.btn-success.btn-block(type='submit', data-dismiss='modal')
+            button#sub.btn.btn-success.btn-block(type='submit')
               span.glyphicon.glyphicon-off
               |  Add checkin
           |
@@ -59,7 +59,7 @@ block content
                 span.glyphicon.glyphicon-eye-open
                 |  Password
               |
-              input#password.form-control(type='text')
+              input#password.form-control(type='password')
             |
             button#loginSubmit.btn.btn-success.btn-block(type='submit')
               span.glyphicon.glyphicon-off
@@ -82,28 +82,28 @@ block content
           .modal-body(style='padding:20px 30px;')
             .form-group
               label(for='signName')
-                span.glyphicon.glyphicon-map-marker
+                span.glyphicon.glyphicon-map-user
                 |  Name
               |
               input#signName.form-control(type='text')
             |
             .form-group
               label(for='signEmail')
-                span.glyphicon.glyphicon-map-marker
+                span.glyphicon.glyphicon-map-envelope
                 |  Email
               |
               input#signEmail.form-control(type='text')
             |
             .form-group
               label(for='signPassword')
-                span.glyphicon.glyphicon-map-marker
+                span.glyphicon.glyphicon-map-eye-open
                 |  Password
               |
-              input#signPassword.form-control(type='text')
+              input#signPassword.form-control(type='password')
             |
             .form-group
               label(for='signAccount')
-                span.glyphicon.glyphicon-map-marker
+                span.glyphicon.glyphicon-map-globe
                 |  Twitter account
               |
               input#signAccount.form-control(type='text')
@@ -111,7 +111,9 @@ block content
             button#signSubmit.btn.btn-success.btn-block(type='submit')
               span.glyphicon.glyphicon-off
               |  Sign up
-          |
-                        
+            |  
+  #commentsPanel(style='display:none; float:left; width:25%')
+    #comments                     
   #map
+  
   script(src="/js/google_api.js")

@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var User = require('./models/userModel.js');
 var Checkin = require('./models/checkinModel.js');
+var Coment = require('./models/comentModel.js');
 var bodyParser = require('body-parser');
 var jsonwebtoken = require("jsonwebtoken");
 

@@ -15,7 +15,7 @@ exports.createCheckin = function(req, res) {
   newCheckin.save(function(err, checkin) {
     if (err)
       res.send(err);
-    res.json(checkin);
+    res.status(200).json(checkin);
   });
 };
 

@@ -6,6 +6,10 @@ function displayButton () {
     document.getElementById('logoutButton').style.display = "block";
     document.getElementById('loginButton').style.display = "none";
     document.getElementById('signButton').style.display = "none";
+  } else {
+    document.getElementById('logoutButton').style.display = "none";
+    document.getElementById('loginButton').style.display = "block";
+    document.getElementById('signButton').style.display = "block";
   }
 }
 
@@ -35,9 +39,8 @@ function login () {
     })
     .then(function(data) {
       if (data.message == 'OK') {
-        localStorage.setItem('token', JSON.stringify(data.token))
-        localStorage.setItem('user', JSON.stringify(data.name))
-        console.log('1');
+        localStorage.setItem('token', JSON.stringify(data.token));
+        localStorage.setItem('user', JSON.stringify(data.name));
         displayButton();
       } else {
         document.getElementById('message').innerHTML = data.message;
@@ -55,16 +58,15 @@ function login () {
 document.getElementById('loginButton').onclick = login;
 
 //Log out
-function logout () {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
+document.getElementById('logoutButton').onclick = function () {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  displayButton();
 };
-
-document.getElementById('logoutButton').onclick = logout;
 
 
 //Sign up
-function signup () {
+document.getElementById('signButton').onclick = function () {
 
   $("#signModal").modal();
 
@@ -84,33 +86,18 @@ function signup () {
     });
     fetch(request)
     .then(function(response) {
-      if (response.status == 200) {
-        $('#signModal').modal('hide')
-        fetch('/api/auth', {
-          method: 'POST',
-          body: JSON.stringify({ name: user.name, password: user.password }),
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then(function(response) {
-          return response.json()
-        })
-        .then(function(data) {
-          if (data.message == 'OK') {
-            localStorage.setItem('token', JSON.stringify(data.token))
-            localStorage.setItem('user', JSON.stringify(data.name))
-          }
-          displayButton();
-        })
-        .catch(function() {
-          console.log('Error login');
-        });
-      } else {
-        return response.json()
-      }
+      return response.json()
     })
     .then(function(data) {
-      document.getElementById('signMessage').innerHTML = data.message;
-      console.log(data.message);
+      if (data.message == 'OK') {
+        $('#signModal').modal('hide')
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', data.user.name);
+        displayButton();
+      } else {
+        document.getElementById('signMessage').innerHTML = data.message;
+        console.log(data);
+      }
     })
     .catch(function() {
       console.log('Error signup');
@@ -123,8 +110,6 @@ function signup () {
   document.getElementById('signAccount').value = "";
 
 };
-
-document.getElementById('signButton').onclick = signup;
 
 //Init map and adding checkins
 var map;
@@ -154,10 +139,15 @@ function initMap() {
             body: JSON.stringify(checkin),
             headers: {
               'Content-Type': 'application/json',
-              authorization: JSON.parse(token)
+              authorization: JSON.parse(localStorage.getItem('token'))
             }
         });
         fetch(request)
+        .then(function(response) {
+          if (response.status == 200) {
+            $('#checkinModal').modal('hide')
+          }
+        })
         .catch(function() {
             console.log('Error');
         });
@@ -177,7 +167,7 @@ fetch(url)
   checkins.map((checkin) => addMarker(checkin));
 })
 .catch(function() {
-    console.log('Error');
+    console.log('Error get checkins');
 });
 
 //Add marker on map
@@ -189,15 +179,19 @@ function addMarker(checkin) {
     title: checkin.place
   });
 
-  var contentString = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h3 id="firstHeading" class="firstHeading">' + checkin.place + '</h3>'+
-      '<div id="bodyContent">'+
-      '<p>' + checkin.description + '</p>'+
-      '</div>'+
-      '</div>';
 
+  var contentString = '<div id="content">' +
+      '<div id="siteNotice">' +
+      '</div>' +
+      '<h3 id="firstHeading" class="firstHeading">' + checkin.place + '</h3>' +
+      '<div id="bodyContent">'+
+      '<p>Raiting: ' + checkin.raiting + '</p>' +
+      '<p><a onclick="showComments(\'' + checkin._id + '\');">Comments: ' + checkin.votes + '</a></p>' +
+      '<p>' + checkin.description + '</p>' +
+      '</div>' +
+      '</div>'
+
+  console.log(contentString);
 
   var infowindow = new google.maps.InfoWindow({
      content: contentString,
@@ -209,3 +203,39 @@ function addMarker(checkin) {
   });
 
 }
+
+//Comments
+function showComments (checkinId) {
+  console.log(checkinId);
+  var url = '/api/comments/' + checkinId;
+  console.log(url);
+  var request = new Request(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  fetch(request)
+  .then(function(response) {
+    console.log(response);
+    return response.json()
+  })
+  .then(function(comments) {
+    console.log(comments);
+    var div = document.getElementById('comments');
+    var ul = document.createElement('ul');
+
+    div.appendChild(ul);
+
+	  for (var i = 0; i < comments.length; i++) {
+      var li = document.createElement('li');
+      li.innerHTML = comments[i].text;
+      ul.appendChild(li);
+    }
+    document.getElementById('commentsPanel').style.display = "block";
+  })
+  .catch(function() {
+    console.log('Error get comments');
+  });
+
+};
+
+//ocument.getElementById('comments').onclick = showComments;

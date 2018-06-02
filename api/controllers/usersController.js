@@ -55,7 +55,8 @@ exports.createUser = function(req, res) {
       return res.status(400).send(err);
     } else {
       user.password = undefined;
-      return res.status(200).json(user);
+      var token = jwt.sign({ name: user.name, admin: user.admin }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
+      return res.status(200).send({message: "OK", user: user, token: token});
     }
   });
 };

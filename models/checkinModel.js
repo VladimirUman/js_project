@@ -8,11 +8,22 @@ const CheckinSchema = new Schema({
         type: String,
         required: true
     },
-    place: String,
+    place: {
+      type: String,
+      required: [true, 'Why no place']
+    },
     description: String,
     cord: {
     	lat:Number,
     	lng:Number
+    },
+    raiting: {
+      type: Number,
+      default: 0
+    },
+    votes: {
+      type: Number,
+      default: 0
     }
 });
 

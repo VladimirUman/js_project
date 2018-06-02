@@ -1,6 +1,7 @@
 module.exports = function(app) {
 	var checkins = require('../api/controllers/checkinsController');
   var users = require('../api/controllers/usersController.js');
+	var coments = require('../api/controllers/comentsController');
   var checkinsWeb = require('../webControllers/checkinsWebController');
   var usersWeb = require('../webControllers/usersWebController');
 
@@ -12,6 +13,15 @@ module.exports = function(app) {
 		.get(checkins.readCheckin)
 		.put(users.loginRequired, checkins.updateCheckin)
 		.delete(users.loginRequired, checkins.deleteCheckin);
+
+	app.route('/api/comments/:checkinId')
+		.get(coments.allComents)
+		.post(coments.createComent);
+
+	app.route('/api/comments/:comentId')
+		.get(coments.readComent)
+		.put(coments.updateComent)
+		.delete(coments.deleteComent);
 
 	app.route('/api/auth')
     .post(users.auth);
