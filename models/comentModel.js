@@ -11,13 +11,12 @@ const ComentSchema = new Schema({
     },
     text: {
       type: String,
-      required: true
+      //required: true
     },
     raiting: {
         type: Number,
         required: true,
-        default: 0,
-        min: 0,
+        min: 1,
         max: 5
     },
     created: {

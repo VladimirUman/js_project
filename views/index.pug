@@ -6,12 +6,12 @@ block content
       .modal-dialog
         // Modal content
         .modal-content
-          .modal-header(style='padding:25px 30px;')
+          .modal-header
             button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Add your checkin
             
-          .modal-body(style='padding:20px 30px;')
+          .modal-body
             .form-group
               label(for='place')
                 span.glyphicon.glyphicon-map-marker
@@ -37,16 +37,15 @@ block content
       .modal-dialog
         // Modal content
         .modal-content
-          .modal-header(style='padding:25px 30px;')
+          .modal-header
             button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Login
                         
           .modal-message
-            #message(style='text-align:center; padding:10px; color:red')
-              
+            #message              
 
-          .modal-body(style='padding:10px 30px 20px 30px;')
+          .modal-body
             .form-group
               label(for='name')
                 span.glyphicon.glyphicon-user
@@ -71,15 +70,15 @@ block content
       .modal-dialog
         // Modal content
         .modal-content
-          .modal-header(style='padding:25px 30px;')
+          .modal-header
             button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Sign up
               
           .modal-message
-            #signMessage(style='text-align:center; padding:10px; color:red')
+            #signMessage
             
-          .modal-body(style='padding:20px 30px;')
+          .modal-body
             .form-group
               label(for='signName')
                 span.glyphicon.glyphicon-map-user
@@ -112,7 +111,43 @@ block content
               span.glyphicon.glyphicon-off
               |  Sign up
             |  
-  #commentsPanel(style='display:none; float:left; width:25%')
+            
+  // Modal add comment
+  #commentModal.modal.fade(role='dialog', tabindex='-1')
+    .modal-dialog
+      // Modal content
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal') &times;
+          h4
+            |  Add your comment
+          
+        .modal-body
+          #starRaiting.form-group
+            span#star1(data-rait='1')
+            span#star2(data-rait='2')
+            span#star3(data-rait='3')
+            span#star4(data-rait='4')
+            span#star5(data-rait='5')
+            
+          .form-group
+            label(for='addComment')
+              span.glyphicon.glyphicon-pencil
+              |  Comment
+            |
+            textarea#addComment.form-control(type='text', rows='3')
+          |
+          button#commentSubmit.btn.btn-success.btn-block(type='submit')
+            span.glyphicon.glyphicon-off
+            |  Add comment
+          |                    
+            
+  #commentsPanel
+    .modal-header
+      button.close(type='button', onclick="closeComments()")
+        span(aria-hidden='true') &times;
+      h5
+        |  Comments
     #comments                     
   #map
   

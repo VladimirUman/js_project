@@ -24,7 +24,7 @@ exports.createComent = function(req, res) {
       for (var i = 0; i < raiting.length; i++ ) {
         sum += raiting[i].raiting;
       }
-      var resultRaiting = (sum == 0) ? sum : sum / raiting.length;
+      var resultRaiting = (sum == 0) ? sum : Math.round(sum / raiting.length * 10) / 10;
       //console.log(raiting);
       //console.log(resultRaiting);
       Checkin.findOneAndUpdate({_id: coment.checkinId}, { $set: { votes: raiting.length, raiting: resultRaiting }}, {new: true}, function(err, coment) {
