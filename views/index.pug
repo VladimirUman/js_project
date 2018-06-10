@@ -47,11 +47,11 @@ block content
 
           .modal-body
             .form-group
-              label(for='name')
+              label(for='email')
                 span.glyphicon.glyphicon-user
-                |  Name
+                |  Email
               |
-              input#name.form-control(type='text')
+              input#email.form-control(type='text')
             |
             .form-group
               label(for='password')
@@ -108,9 +108,60 @@ block content
               input#signAccount.form-control(type='text')
             |
             button#signSubmit.btn.btn-success.btn-block(type='submit')
-              span.glyphicon.glyphicon-off
+              span.glyphicon.glyphicon-ok-sing
               |  Sign up
             |  
+            
+  // Modal change profile
+  #profileModal.modal.fade(role='dialog', tabindex='-1')
+      .modal-dialog
+        // Modal content
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal') &times;
+            h4
+              |  Profile
+              
+          .modal-message
+            #profileMessage
+            
+          .modal-body
+            .form-group
+              label(for='profileName')
+                span.glyphicon.glyphicon-map-user
+                |  Name
+              |
+              input#profileName.form-control(type='text')
+            |
+            .form-group
+              label(for='profileEmail')
+                span.glyphicon.glyphicon-map-envelope
+                |  Email
+              |
+              input#profileEmail.form-control(type='text')
+            |
+            .form-group
+              label(for='profilePassword')
+                span.glyphicon.glyphicon-map-eye-open
+                |  Password
+              |
+              input#profilePassword.form-control(type='password')
+            |
+            .form-group
+              label(for='profileAccount')
+                span.glyphicon.glyphicon-map-globe
+                |  Twitter account
+              |
+              input#profileAccount.form-control(type='text')
+            |
+            button#profileSubmit.btn.btn-success.btn-block(type='submit')
+              span.glyphicon.glyphicon-ok-sing
+              |  Save changes
+            | 
+            button#profileDelete.btn.btn-danger.btn-block(type='submit')
+              span.glyphicon.glyphicon-minus-sing
+              |  Remove account
+            | 
             
   // Modal add comment
   #commentModal.modal.fade(role='dialog', tabindex='-1')

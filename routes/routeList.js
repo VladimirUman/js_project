@@ -16,22 +16,22 @@ module.exports = function(app) {
 
 	app.route('/api/comments/:checkinId')
 		.get(coments.allComents)
-		.post(coments.createComent);
+		.post(users.loginRequired, coments.createComent);
 
 	app.route('/api/comments/:comentId')
 		.get(coments.readComent)
-		.put(coments.updateComent)
-		.delete(coments.deleteComent);
+		.put(users.loginRequired, coments.updateComent)
+		.delete(users.loginRequired, coments.deleteComent);
 
 	app.route('/api/auth')
     .post(users.auth);
 
 	app.route('/api/users')
-    .get(users.allUsers)
+    .get(users.loginRequired, users.allUsers)
 		.post(users.createUser);
 
   app.route('/api/users/:userId')
-    .get(users.readlUser)
+    .get(users.loginRequired, users.readlUser)
 		.put(users.loginRequired, users.updateUser)
     .delete(users.loginRequired, users.deleteUser);
 

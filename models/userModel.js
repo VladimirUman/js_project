@@ -7,16 +7,16 @@ const UserSchema = new Schema({
     name: {
         type: String,
         required: [true, 'Why no name'],
-        unique: true,
+        unique: true
     },
     email: {
         type: String,
         unique: true,
-        required: true
+        required: [true, 'Why no email']
     },
     password: {
         type: String,
-        required: true
+        required: [true, 'Enter password'],
     },
     twitter_account: String,
     admin: {

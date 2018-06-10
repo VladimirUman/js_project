@@ -4,10 +4,12 @@ displayButton();
 function displayButton () {
   if (localStorage.getItem('token') && localStorage.getItem('user')) {
     document.getElementById('logoutButton').style.display = "block";
+    document.getElementById('profileButton').style.display = "block";
     document.getElementById('loginButton').style.display = "none";
     document.getElementById('signButton').style.display = "none";
   } else {
     document.getElementById('logoutButton').style.display = "none";
+    document.getElementById('profileButton').style.display = "none";
     document.getElementById('loginButton').style.display = "block";
     document.getElementById('signButton').style.display = "block";
   }
@@ -21,7 +23,7 @@ function login () {
   document.getElementById('loginSubmit').onclick = function () {
 
     const user = {
-      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
       password: document.getElementById('password').value
     };
 
@@ -39,8 +41,10 @@ function login () {
     })
     .then(function(data) {
       if (data.message == 'OK') {
-        localStorage.setItem('token', JSON.stringify(data.token));
-        localStorage.setItem('user', JSON.stringify(data.name));
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', data.user.name);
+        localStorage.setItem('userId', data.user._id);
+        //console.log(data);
         displayButton();
       } else {
         document.getElementById('message').innerHTML = data.message;
@@ -50,7 +54,7 @@ function login () {
       console.log('Error');
     });
   };
-  document.getElementById('name').value = "";
+  document.getElementById('email').value = "";
   document.getElementById('password').value = "";
 
 };
@@ -61,6 +65,7 @@ document.getElementById('loginButton').onclick = login;
 document.getElementById('logoutButton').onclick = function () {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('userId');
   displayButton();
 };
 
@@ -93,6 +98,7 @@ document.getElementById('signButton').onclick = function () {
         $('#signModal').modal('hide')
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', data.user.name);
+        localStorage.setItem('userId', data.user._id);
         displayButton();
       } else {
         document.getElementById('signMessage').innerHTML = data.message;
@@ -108,6 +114,95 @@ document.getElementById('signButton').onclick = function () {
   document.getElementById('signEmail').value = "";
   document.getElementById('signPassword').value = "";
   document.getElementById('signAccount').value = "";
+
+};
+
+//Change profile
+document.getElementById('profileButton').onclick = function () {
+
+  userId = localStorage.getItem('userId');
+  var request = new Request('/api/users/' + userId, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json',
+              authorization: localStorage.getItem('token')
+    }
+  });
+  fetch(request)
+  .then(function(response) {
+    return response.json()
+  })
+  .then(function(data) {
+    if (data.message == 'OK') {
+      $("#profileModal").modal();
+      document.getElementById('profileName').value = data.user.name;
+      document.getElementById('profileEmail').value = data.user.email;
+      document.getElementById('profilePassword').value = data.user.password;
+      document.getElementById('profileAccount').value = data.user.twitter_account;
+    } else {
+      document.getElementById('signMessage').innerHTML = data.message;
+      //console.log(data);
+    }
+  })
+  .catch(function() {
+    console.log('Error change profile');
+  });
+
+  document.getElementById('profileSubmit').onclick = function () {
+
+    const user = {
+      name: document.getElementById('profileName').value,
+      email: document.getElementById('profileEmail').value,
+      password: document.getElementById('profilePassword').value,
+      twitter_account: document.getElementById('profileAccount').value
+    };
+
+    var request = new Request('/api/users/' + userId, {
+      method: 'PUT',
+      body: JSON.stringify(user),
+      headers: { 'Content-Type': 'application/json',
+                authorization: localStorage.getItem('token')
+               }
+    });
+    fetch(request)
+    .then(function(response) {
+      return response.json()
+    })
+    .then(function(data) {
+      if (data.message == 'OK') {
+        $('#profileModal').modal('hide')
+      } else {
+        document.getElementById('profileMessage').innerHTML = data.message;
+        //console.log(data);
+      }
+    })
+    .catch(function() {
+      console.log('Error change profile');
+    });
+  };
+
+  document.getElementById('profileDelete').onclick = function () {
+
+    var request = new Request('/api/users/' + userId, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json',
+                authorization: localStorage.getItem('token')
+               }
+    });
+    fetch(request)
+    .then(function(response) {
+      if (response.status == 200) {
+        ('#profileModal').modal('hide')
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userId');
+        displayButton();
+      }
+      return response.json()
+    })
+    .catch(function() {
+      console.log('Error delete profile');
+    });
+  };
 
 };
 
@@ -139,7 +234,7 @@ function initMap() {
             body: JSON.stringify(checkin),
             headers: {
               'Content-Type': 'application/json',
-              authorization: JSON.parse(localStorage.getItem('token'))
+              authorization: localStorage.getItem('token')
             }
         });
         fetch(request)
@@ -287,6 +382,7 @@ function closeComments () {
   document.getElementById('commentsPanel').style.display = "none";
 }
 
+//Add comment
 function addComment (checkinId) {
   if (localStorage.getItem('token') && localStorage.getItem('user')) {
     $("#commentModal").modal();
@@ -309,7 +405,7 @@ function addComment (checkinId) {
           body: JSON.stringify(comment),
           headers: {
             'Content-Type': 'application/json',
-            authorization: JSON.parse(localStorage.getItem('token'))
+            authorization: localStorage.getItem('token')
           }
       });
       fetch(request)

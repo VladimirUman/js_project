@@ -15,7 +15,7 @@ const ComentSchema = new Schema({
     },
     raiting: {
         type: Number,
-        required: true,
+        required: [true, 'Set raiting'],
         min: 1,
         max: 5
     },

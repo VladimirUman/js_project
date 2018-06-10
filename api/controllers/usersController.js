@@ -5,18 +5,18 @@ var jwt = require('jsonwebtoken');
 
 
 exports.auth = function(req, res) {
-  if (!req.body || !req.body.name || !req.body.password) {
+  if (!req.body || !req.body.email || !req.body.password) {
     res.sendStatus(400);
   }
-  User.findOne({name: req.body.name}, function(err, user) {
+  User.findOne({email: req.body.email}, function(err, user) {
     if (err) {
       res.status(500).send(err.message);
     } else if (!user) {
       res.status(400).send({message: "Not found user"});
     } else {
       if (user.comparePassword(req.body.password) && !req.user) {
-        var token = jwt.sign({ name: user.name, admin: user.admin }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
-        res.status(200).send({message: "OK", name: user.name, token: token });
+        var token = jwt.sign({ name: user.name, userId: user._id }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
+        res.status(200).send({message: "OK", user: user, token: token });
       } else {
         res.status(400).send({message: "Wrong password"});
       }
@@ -26,7 +26,7 @@ exports.auth = function(req, res) {
 
 
 exports.loginRequired = function(req, res, next) {
-  console.log(req.user);
+  //console.log(req.user);
   if (req.user) {
     next();
   } else {
@@ -55,7 +55,7 @@ exports.createUser = function(req, res) {
       return res.status(400).send(err);
     } else {
       user.password = undefined;
-      var token = jwt.sign({ name: user.name, admin: user.admin }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
+      var token = jwt.sign({ name: user.name, userId: user._id }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
       return res.status(200).send({message: "OK", user: user, token: token});
     }
   });
@@ -66,7 +66,7 @@ exports.readlUser = function(req, res) {
   User.findById(req.params.userId, function(err, user) {
     if (err)
       res.send(err);
-    res.status(200).json(user);
+    res.status(200).send({message: "OK", user: user});
   });
 };
 
@@ -75,15 +75,13 @@ exports.updateUser = function(req, res) {
   User.findOneAndUpdate({_id: req.params.userId}, req.body, {new: true}, function(err, user) {
     if (err)
       res.send(err);
-    res.status(200).json(user);
+    res.status(200).send({message: "OK", user: user});
   });
 };
 
 
 exports.deleteUser = function(req, res) {
-  User.remove({
-    _id: req.params.userId
-  }, function(err, user) {
+  User.remove({_id: req.params.userId}, function(err, user) {
     if (err)
       res.send(err);
     res.status(200).json({ message: 'User successfully deleted' });
