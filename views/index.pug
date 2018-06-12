@@ -10,6 +10,9 @@ block content
             button.close(type='button', data-dismiss='modal') &times;
             h4
               |  Add your checkin
+              
+          .modal-message
+            #checkinMessage   
             
           .modal-body
             .form-group
@@ -162,7 +165,43 @@ block content
               span.glyphicon.glyphicon-minus-sing
               |  Remove account
             | 
+  // Modal edit checkin
+  #editCheckinModal.modal.fade(role='dialog', tabindex='-1')
+      .modal-dialog
+        // Modal content
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal') &times;
+            h4
+              |  Edit checkin
+              
+          .modal-message
+            #editCheckinMessage
             
+          .modal-body
+            .form-group
+              label(for='editCheckinPlace')
+                span.glyphicon.glyphicon-map-marker
+                |  Place
+              |
+              input#editCheckinPlace.form-control(type='text')
+            |
+            .form-group
+              label(for='editCheckinDescription')
+                span.glyphicon.glyphicon-pencil
+                |  Description
+              |
+              textarea#editCheckinDescription.form-control(type='text', rows='3')
+            |
+            button#editCheckinSubmit.btn.btn-success.btn-block(type='submit')
+              span.glyphicon.glyphicon-ok-sing
+              |  Save changes
+            | 
+            button#editCheckinDelete.btn.btn-danger.btn-block(type='submit')
+              span.glyphicon.glyphicon-minus-sing
+              |  Remove checkin
+            | 
+              
   // Modal add comment
   #commentModal.modal.fade(role='dialog', tabindex='-1')
     .modal-dialog
@@ -203,3 +242,5 @@ block content
   #map
   
   script(src="/js/google_api.js")
+  //script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjRkTyIgkok7xjNW7hjsCqSVrOr1Vm-gI&callback=initMap" async defer)
+  script(src="/js/markerclusterer.js")

@@ -26,7 +26,7 @@ exports.auth = function(req, res) {
 
 
 exports.loginRequired = function(req, res, next) {
-  //console.log(req.user);
+  console.log(req.user);
   if (req.user) {
     next();
   } else {

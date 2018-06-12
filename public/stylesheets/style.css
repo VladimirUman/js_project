@@ -103,3 +103,7 @@ strong {
 hr {
   padding: 3px;
 }
+
+.window-links a{
+  margin: 0 20px;
+}

@@ -15,7 +15,7 @@ exports.createCheckin = function(req, res) {
   newCheckin.save(function(err, checkin) {
     if (err)
       res.send(err);
-    res.status(200).json(checkin);
+    res.status(200).json({ message: "OK", checkin: checkin });
   });
 };
 
@@ -24,7 +24,7 @@ exports.readCheckin = function(req, res) {
   Checkin.findById(req.params.checkinId, function(err, checkin) {
     if (err)
       res.send(err);
-    res.json(checkin);
+    res.status(200).json({ message: "OK", checkin: checkin });
   });
 };
 
@@ -33,7 +33,7 @@ exports.updateCheckin = function(req, res) {
   Checkin.findOneAndUpdate({_id: req.params.checkinId}, req.body, {new: true}, function(err, checkin) {
     if (err)
       res.send(err);
-    res.json(checkin);
+    res.status(200).json({ message: "OK", checkin: checkin });
   });
 };
 
@@ -44,6 +44,6 @@ exports.deleteCheckin = function(req, res) {
   }, function(err, checkin) {
     if (err)
       res.send(err);
-    res.json({ message: 'Checkin successfully deleted' });
+    res.status(200).json({ message: "OK" });
   });
 };

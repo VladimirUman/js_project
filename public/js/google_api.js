@@ -206,6 +206,7 @@ document.getElementById('profileButton').onclick = function () {
 
 };
 
+var markers = [];
 //Init map and adding checkins
 var map;
 const url = '/api/checkins';
@@ -227,8 +228,6 @@ function initMap() {
           description: document.getElementById('description').value
         }
 
-        addMarker(checkin);
-
         var request = new Request(url, {
             method: 'POST',
             body: JSON.stringify(checkin),
@@ -239,12 +238,19 @@ function initMap() {
         });
         fetch(request)
         .then(function(response) {
-          if (response.status == 200) {
-            $('#checkinModal').modal('hide')
+          return response.json()
+        })
+        .then(function(data) {
+          if (data.message == 'OK') {
+            $('#checkinModal').modal('hide');
+            addMarker(data.checkin)
+          } else {
+            document.getElementById('checkinMessage').innerHTML = data.message;
+            //console.log(data);
           }
         })
         .catch(function() {
-            console.log('Error');
+            console.log('Error add checkin');
         });
       };
       document.getElementById('place').value = "";
@@ -253,17 +259,118 @@ function initMap() {
       login();
     }
   });
+  getCheckins();
 
 }
-//Get chekins
-fetch(url)
-.then((resp) => resp.json()) // Transform the data into json
-.then(function(checkins) {
-  checkins.map((checkin) => addMarker(checkin));
-})
-.catch(function() {
-    console.log('Error get checkins');
-});
+
+//Get checkins
+function getCheckins () {
+  fetch(url)
+  .then((resp) => resp.json()) // Transform the data into json
+  .then(function(checkins) {
+    //console.log(checkins);
+    checkins.map((checkin) => addMarker(checkin));
+  })
+  .catch(function() {
+      console.log('Error get checkins');
+  });
+}
+//Edit checkin
+function editCheckin (checkinId) {
+  if (localStorage.getItem('token') && localStorage.getItem('user')) {
+    $("#editCheckinModal").modal();
+
+    var request = new Request('/api/checkins/' + checkinId, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json',
+                authorization: localStorage.getItem('token')
+      }
+    });
+    fetch(request)
+    .then(function(response) {
+      return response.json()
+    })
+    .then(function(data) {
+      if (data.message == 'OK') {
+        document.getElementById('editCheckinPlace').value = data.checkin.place;
+        document.getElementById('editCheckinDescription').value = data.checkin.description;
+      } else {
+        document.getElementById('signMessage').innerHTML = data.message;
+        //console.log(data);
+      }
+    })
+    .catch(function() {
+      console.log('Error get checkin');
+    });
+
+    document.getElementById('editCheckinSubmit').onclick = function () {
+
+      const checkin = {
+        place: document.getElementById('editCheckinPlace').value,
+        description: document.getElementById('editCheckinDescription').value
+      };
+
+      var request = new Request('/api/checkins/' + checkinId, {
+        method: 'PUT',
+        body: JSON.stringify(checkin),
+        headers: { 'Content-Type': 'application/json',
+                  authorization: localStorage.getItem('token')
+                 }
+      });
+      fetch(request)
+      .then(function(response) {
+        return response.json()
+      })
+      .then(function(data) {
+        if (data.message == 'OK') {
+          $('#editCheckinModal').modal('hide');
+          deleteAllMarkers();
+          getCheckins();
+        } else {
+          document.getElementById('editCheckinMessage').innerHTML = data.message;
+          console.log(data);
+        }
+      })
+      .catch(function() {
+        console.log('Error change checkin');
+      });
+    };
+
+    document.getElementById('editCheckinDelete').onclick = function () {
+
+      var request = new Request('/api/checkins/' + checkinId, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json',
+                  authorization: localStorage.getItem('token')
+                 }
+      });
+      fetch(request)
+      .then(function(response) {
+        return response.json()
+      })
+      .then(function(data) {
+        if (data.message == 'OK') {
+          $('#editCheckinModal').modal('hide');
+          deleteAllMarkers();
+          getCheckins();
+          //console.log(data);
+        }
+      })
+      .catch(function() {
+        console.log('Error delete checkin');
+      });
+    };
+  } else {
+    login();
+  }
+}
+
+//Delete all markers
+function deleteAllMarkers() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+}
 
 //Add marker on map
 function addMarker(checkin) {
@@ -291,7 +398,8 @@ function addMarker(checkin) {
       '<div class="total-raiting"><strong>' + checkin.raiting + '</strong>' + raitingString + '</div>' +
       '<div class="total-comments"><a onclick="showComments(\'' + checkin._id + '\');"> Comments: ' + checkin.votes + '</a></div>' +
       '<div class="window-text">' + checkin.description + '</div>' +
-      '<p><a onclick="addComment(\'' + checkin._id + '\');">Add comment</a></p>' +
+      '<div class="window-links"><a onclick="addComment(\'' + checkin._id + '\');">Add comment</a>' +
+      '<a onclick="editCheckin(\'' + checkin._id + '\');">  Edit checkin</a></div>' +
       '</div>' +
       '</div>'
 
@@ -303,7 +411,8 @@ function addMarker(checkin) {
   marker.addListener('click', function() {
      infowindow.open(map, marker);
   });
-
+  markers.push(marker);
+  var markerCluster = new MarkerClusterer(map, markers, {imagePath: '/images/m'});
 }
 
 //Comments
@@ -328,36 +437,14 @@ function showComments (checkinId) {
       var commentName = document.createElement('div');
       commentName.className = "comment-name";
       var commentRaiting = document.createElement('div');
-      var star1 = document.createElement('span');
-      star1.className = "glyphicon glyphicon-star-empty";
-      if (comments[i].raiting >= 1) {
-        star1.className = "glyphicon glyphicon-star";
+      for (var j = 1; j <= 5; j++) {
+        var star = document.createElement('span');
+        star.className = "glyphicon glyphicon-star-empty";
+        if (comments[i].raiting >= j) {
+          star.className = "glyphicon glyphicon-star";
+        }
+        commentRaiting.appendChild(star);
       }
-      commentRaiting.appendChild(star1);
-      var star2 = document.createElement('span');
-      star2.className = "glyphicon glyphicon-star-empty";
-      if (comments[i].raiting >= 2) {
-        star2.className = "glyphicon glyphicon-star";
-      }
-      commentRaiting.appendChild(star2);
-      var star3 = document.createElement('span');
-      star3.className = "glyphicon glyphicon-star-empty";
-      if (comments[i].raiting >= 3) {
-        star3.className = "glyphicon glyphicon-star";
-      }
-      commentRaiting.appendChild(star3);
-      var star4 = document.createElement('span');
-      star4.className = "glyphicon glyphicon-star-empty";
-      if (comments[i].raiting >= 4) {
-        star4.className = "glyphicon glyphicon-star";
-      }
-      commentRaiting.appendChild(star4);
-      var star5 = document.createElement('span');
-      star5.className = "glyphicon glyphicon-star-empty";
-      if (comments[i].raiting >= 5) {
-        star5.className = "glyphicon glyphicon-star";
-      }
-      commentRaiting.appendChild(star5);
       commentRaiting.className = "star-raiting";
       var commentText = document.createElement('div');
       commentText.className = "comment-text";
@@ -397,7 +484,7 @@ function addComment (checkinId) {
         text: document.getElementById('addComment').value,
         raiting: setRaiting
       }
-      console.log(comment);
+      //console.log(comment);
       var url = '/api/comments/' + checkinId;
 
       var request = new Request(url, {
@@ -410,9 +497,14 @@ function addComment (checkinId) {
       });
       fetch(request)
       .then(function(response) {
-        //console.log(response);
-        if (response.status == 200) {
-          $('#commentModal').modal('hide')
+        return response.json()
+      })
+      .then(function(data) {
+        if (data.message == 'OK') {
+          $('#commentModal').modal('hide');
+          deleteAllMarkers();
+          getCheckins();
+          showComments(checkinId)
         }
       })
       .catch(function() {

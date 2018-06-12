@@ -30,9 +30,9 @@ exports.createComent = function(req, res) {
       Checkin.findOneAndUpdate({_id: coment.checkinId}, { $set: { votes: raiting.length, raiting: resultRaiting }}, {new: true}, function(err, coment) {
         if (err)
           res.send(err);
+        res.status(200).json({ message: "OK", comment: coment });
       });
     });
-    res.status(200).json(coment);
   });
 };
 
