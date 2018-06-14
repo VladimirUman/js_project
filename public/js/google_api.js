@@ -411,8 +411,8 @@ function addMarker(checkin) {
   marker.addListener('click', function() {
      infowindow.open(map, marker);
   });
-  markers.push(marker);
-  var markerCluster = new MarkerClusterer(map, markers, {imagePath: '/images/m'});
+  //markers.push(marker);
+  //var markerCluster = new MarkerClusterer(map, markers, {imagePath: '/images/m'});
 }
 
 //Comments
