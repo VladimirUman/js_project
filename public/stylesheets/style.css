@@ -78,6 +78,11 @@ strong {
   width:25%;
 }
 
+#commentsPanel .modal-header {
+  text-align: left;
+  padding: 10px;
+}
+
 #comments {
   overflow: auto;
   height: 100%;
