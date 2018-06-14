@@ -16,7 +16,7 @@ const UserSchema = new Schema({
     },
     password: {
         type: String,
-        required: [true, 'Enter password'],
+        required: [true, 'Why no password']
     },
     twitter_account: String,
     admin: {
@@ -25,8 +25,13 @@ const UserSchema = new Schema({
     }
 });
 
-UserSchema.methods.comparePassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
-};
+//UserSchema.methods.comparePassword = function(password) {
+//  return bcrypt.compareSync(password, this.password);
+//};
+
+UserSchema.pre('save', function(next){
+  this.password = bcrypt.hashSync(this.password, 10);
+  next();
+});
 
 module.exports = mongoose.model('User', UserSchema, 'test_users');

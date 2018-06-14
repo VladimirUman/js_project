@@ -42,8 +42,8 @@ function login () {
     .then(function(data) {
       if (data.message == 'OK') {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', data.user.name);
-        localStorage.setItem('userId', data.user._id);
+        localStorage.setItem('user', data.name);
+        localStorage.setItem('userId', data.userId);
         //console.log(data);
         displayButton();
       } else {
@@ -97,8 +97,8 @@ document.getElementById('signButton').onclick = function () {
       if (data.message == 'OK') {
         $('#signModal').modal('hide')
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', data.user.name);
-        localStorage.setItem('userId', data.user._id);
+        localStorage.setItem('user', data.name);
+        localStorage.setItem('userId', data.userId);
         displayButton();
       } else {
         document.getElementById('signMessage').innerHTML = data.message;

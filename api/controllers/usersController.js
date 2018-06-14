@@ -14,9 +14,9 @@ exports.auth = function(req, res) {
     } else if (!user) {
       res.status(400).send({message: "Not found user"});
     } else {
-      if (user.comparePassword(req.body.password) && !req.user) {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
         var token = jwt.sign({ name: user.name, userId: user._id }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
-        res.status(200).send({message: "OK", user: user, token: token });
+        res.status(200).send({message: "OK", name: user.name, userId: user._id, token: token });
       } else {
         res.status(400).send({message: "Wrong password"});
       }
@@ -48,15 +48,15 @@ exports.allUsers = function(req, res) {
 exports.createUser = function(req, res) {
   //console.log(req.body);
   var newUser = new User(req.body);
-  newUser.password = bcrypt.hashSync(req.body.password, 10);
+  //newUser.password = bcrypt.hashSync(req.body.password, 10);
   newUser.admin = false;
   newUser.save(function(err, user) {
     if (err) {
-      return res.status(400).send(err);
+      res.status(400).send(err);
     } else {
-      user.password = undefined;
+      //user.password = undefined;
       var token = jwt.sign({ name: user.name, userId: user._id }, 'mySecretWordMySecretWord', { expiresIn: '10h'});
-      return res.status(200).send({message: "OK", user: user, token: token});
+      res.status(200).send({message: "OK", name: user.name, userId: user._id, token: token});
     }
   });
 };
